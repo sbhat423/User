@@ -8,10 +8,12 @@ namespace User.API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, ILogger<UserController> logger)
         {
-            _userService = userService;
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpPost("retrieveUsers")]
@@ -19,7 +21,11 @@ namespace User.API.Controllers
         {
             if (usernames == null || !usernames.Any())
             {
-                return BadRequest("Invalid list of username");
+                return BadRequest("The list of usernames is null or empty");
+            }
+            if (usernames.Exists(x => string.IsNullOrEmpty(x)))
+            {
+                return BadRequest("The usernames list item should not contain null or empty values");
             }
 
             try
@@ -27,9 +33,10 @@ namespace User.API.Controllers
                 var result = await _userService.GetUserDetails(usernames);
                 return Ok(result);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "An error occurred while processing the request");
+                return StatusCode(500, $"Error: {ex.Message}");
             }
         }
     }

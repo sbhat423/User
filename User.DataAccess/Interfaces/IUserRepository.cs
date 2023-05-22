@@ -4,6 +4,6 @@ namespace User.DataAccess.Interfaces
 {
     public interface IUserRepository
     {
-        Task<UserDetails> GetUserDetails(string userNames);
+        Task<UserDetails?> GetUserDetails(string userNames);
     }
 }

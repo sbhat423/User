@@ -14,7 +14,7 @@ namespace User.Business.Helpers
                 Company = userDetails.Company,
                 Followers = userDetails.Followers,
                 PublicRepos = userDetails.PublicRepos,
-                AverageFollowersPerPublicRepository = (float)userDetails.Followers / userDetails.PublicRepos,
+                AverageFollowers = (float)userDetails.Followers / userDetails.PublicRepos,
             };
         }
     }
